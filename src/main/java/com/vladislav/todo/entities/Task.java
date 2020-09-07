@@ -20,7 +20,7 @@ public class Task {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private User user;
 
     @Column(name = "content", nullable = false)

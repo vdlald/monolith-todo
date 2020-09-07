@@ -1,17 +1,18 @@
 package com.vladislav.todo.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@ToString(exclude = "password")
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
@@ -32,10 +33,13 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<Authority> authorities;
+    private List<Authority> authorities = new ArrayList<>() {{
+        add(Authority.ROLE_USER);
+    }};
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-    private List<Task> tasks;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
+    private List<Task> tasks = new ArrayList<>();
 
     @AllArgsConstructor
     public enum Authority implements GrantedAuthority {
