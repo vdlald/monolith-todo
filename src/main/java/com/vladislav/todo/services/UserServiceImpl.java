@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public User getAuthenticatedUser() {
-        final String username = authenticationFacade.getAuthentication().getName();
-        return userRepository.findByUsername(username).get();
+        return (User) authenticationFacade.getAuthentication().getPrincipal();
     }
 }
