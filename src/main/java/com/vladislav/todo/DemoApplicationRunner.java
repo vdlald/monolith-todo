@@ -23,8 +23,8 @@ public class DemoApplicationRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         final List<Task> tasks = List.of(
-                new Task().setContent("content1"),
-                new Task().setContent("content2"));
+                new Task().setContent("Content 1"),
+                new Task().setContent("Content 2"));
         final User user = new User()
                 .setUsername("demo")
                 .setPassword(passwordEncoder.encode("demo"))
