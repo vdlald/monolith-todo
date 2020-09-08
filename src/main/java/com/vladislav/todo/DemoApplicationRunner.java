@@ -24,7 +24,8 @@ public class DemoApplicationRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         final List<Task> tasks = List.of(
                 Task.builder().setContent("Content 1").build(),
-                Task.builder().setContent("Content 2").build());
+                Task.builder().setContent("Content 2").setCompleted(true).build(),
+                Task.builder().setContent("Content 3").build());
         final User user = new User()
                 .setUsername("demo")
                 .setPassword(passwordEncoder.encode("demo"))

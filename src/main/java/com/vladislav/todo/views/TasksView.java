@@ -1,5 +1,6 @@
 package com.vladislav.todo.views;
 
+import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -27,6 +28,7 @@ public class TasksView extends VerticalLayout {
     }};
 
     private final List<Task> allUserTasks;
+    private final Div tasksContainer = new Div();
 
     public TasksView(
             TaskService taskService,
@@ -38,13 +40,23 @@ public class TasksView extends VerticalLayout {
         setSizeFull();
         setAlignItems(Alignment.CENTER);
 
-        this.add(new H2("Add task"), new Div(taskForm), new H2("Tasks"));
+        this.add(new H2("Add task"), new Div(taskForm), new H2("Tasks"), tasksContainer);
 
         final User user = userService.getAuthenticatedUser();
         allUserTasks = taskService.getAllUserTasks(user.getId());
+
         allUserTasks.stream()
-                .map(TaskComponent::new)
-                .forEach(this::add);
+                .sorted((t1, t2) -> {
+                    if (t1.getCompleted().equals(t2.getCompleted())) {
+                        return 0;
+                    } else if (t1.getCompleted()) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                })
+                .map(this::newTaskComponent)
+                .forEach(tasksContainer::add);
     }
 
     private void onAddTask(TaskForm.SaveEvent event) {
@@ -53,8 +65,19 @@ public class TasksView extends VerticalLayout {
         final Task saved = taskService.saveTask(task);
 
         allUserTasks.add(saved);
-        this.add(new TaskComponent(saved));
+        tasksContainer.add(newTaskComponent(saved));
 
         taskForm.setTask(new Task());
+    }
+
+    private TaskComponent newTaskComponent(Task task) {
+        return new TaskComponent(task) {{
+            addListener(UpdateEvent.class, TasksView.this::onUpdateTask);
+        }};
+    }
+
+    private void onUpdateTask(TaskComponent.UpdateEvent event) {
+        final Task task = event.getTask();
+        taskService.saveTask(task);
     }
 }
