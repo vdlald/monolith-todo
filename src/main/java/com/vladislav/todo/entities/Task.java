@@ -1,8 +1,6 @@
 package com.vladislav.todo.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
@@ -10,7 +8,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true)
+@Builder(setterPrefix = "set")
 @Entity(name = "Task")
 @Table(name = "tasks")
 public class Task {
@@ -26,6 +24,7 @@ public class Task {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Builder.Default
     @Column(name = "completed", nullable = false)
     private Boolean completed = false;
 

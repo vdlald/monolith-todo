@@ -9,14 +9,20 @@ public class TaskComponent extends Div {
 
     private final Task task;
 
+    private final Text contentText;
+    private final Checkbox completedCheckbox;
+
     public TaskComponent(Task task) {
         this.task = task;
 
         addClassName("task-component");
 
+        contentText = new Text(task.getContent());
+        completedCheckbox = new Checkbox(task.getCompleted());
+
         this.add(
-                new Checkbox(task.getCompleted()),
-                new Text(task.getContent())
+                completedCheckbox,
+                contentText
         );
     }
 }
